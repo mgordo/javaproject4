@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Welcome to the Gnome Shoppe</title>
+    </h:head>
+    <h:body>
+        <h1>'Tis the Gnome Shoppe</h1>
+        
+        <h3>Your Basket</h3>
+        <p>
+            <p>
+            <h:outputLabel for="username" rendered="#{loginManager.currentUser != null}"  value="Username: "/>
+            <h:outputText id="username" value="#{loginManager.currentUser.Name}"/>
+            </p>
+            <h:commandButton value="LogOut" action="#{loginManager.logout}"/>
+            <h:commandButton value="Buy Basket" action="#{loginManager.buy}"/>
+            <p>
+            <h:outputLabel for="currentBasket" rendered="#{loginManager.currentUser != null}"  value=" Your Basket: "/>
+            <h:outputText id="currentExAmount" value="#{exManager.currentUser.basket}"/> /TODO SHOW THE BASKET
+      
+        </p>
+        
+        <h:form>
+        <h3>Inventory</h3>
+            <p>
+                <h:outputLabel for="newItemAmount" value="Amount: "/>
+                <h:inputText id="newItemAmount" value="#{loginManager.temporaryItemAmount}"/>
+            
+            <h:selectOneMenu value="#{loginManager.temporaryItem}">
+                <f:selectItems value="#{loginManager.allItems}" />
+   	    </h:selectOneMenu>
+            <h:outputLabel for="currentTemporaryAmount" rendered="#{loginManager.temporaryItem != null}"  value=" This item has the following number of units available: "/>
+            <h:outputText id="currentTemporaryAmount" value="#{loginManager.temporaryItem.totalAvailable}"/> 
+                
+            </p>
+        
+            <p>
+                <h:commandButton value="Add to Basket" action="#{loginManager.addToBasket}"/>
+            </p>
+        
+
+            <p>
+                <h:outputLabel for="newItemName" rendered="#{loginManager.currentUser.isAdmin != null}" value="Name for the new Item: "/>
+                <h:inputText id="newItemName" value="#{loginManager.newItemName}"/>
+                <h:outputLabel for="newItemQuantity" rendered="#{loginManager.currentUser.isAdmin != null}" value=" Item Quantity: "/>
+                <h:inputText id="newItemQuantity" value="#{exManager.newItemQuantity}"/>
+            </p>
+            <p>
+                <h:commandButton value="Add Item to Inventory" rendered="#{loginManager.currentUser.isAdmin != null}" action="#{exManager.addItem}"/>
+            </p>
+            <hr/>
+        
+        
+        </h:form>
+    </h:body>
+    
+</html>
+

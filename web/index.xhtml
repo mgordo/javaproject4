@@ -3,10 +3,32 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html">
     <h:head>
-        <title>Facelet Title</title>
+        <title>Login Page</title>
     </h:head>
     <h:body>
-        Hello from Facelets
+        
+        
+        <h3>Enter username and Password</h3>
+            <p>
+                <h:outputLabel for="newUsername" value="Username: "/>
+                <h:inputText id="newUsername" value="#{loginManager.newUsername}"/>
+            
+            
+            </p>
+        
+        <p>
+                <h:outputLabel for="newPassword" value="Password: "/>
+                <h:inputText id="newPassword" value="#{loginManager.newPassword}"/>
+            
+            
+            </p>
+        
+            <p>
+                <h:commandButton value="Login" action="#{loginManager.login}"/>
+            </p>
+            <p>
+                <h:commandButton value="Register" action="#{loginManager.register}"/>
+            </p>
     </h:body>
 </html>
 
