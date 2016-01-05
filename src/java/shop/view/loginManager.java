@@ -2,7 +2,7 @@
 package shop.view;
 
 import shop.controller.ShopFacade;
-
+import shop.model.*;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,7 +27,7 @@ public class loginManager implements Serializable{
     
     private ShopFacade shopfacade;
     
-    private Username currentUsername;
+    private User currentUsername;
     
     private String newUsername;
     private String newPassword;
@@ -106,11 +106,11 @@ public class loginManager implements Serializable{
         return temporaryItemAmount;
     }
     
-    public void setCurrentUsername(Username u){
+    public void setCurrentUsername(User u){
         currentUsername = u;
     }
     
-    public Username getCurrentUsername(){
+    public User getCurrentUsername(){
         return currentUsername;
     }
     
