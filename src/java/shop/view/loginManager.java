@@ -80,6 +80,7 @@ public class loginManager implements Serializable{
     }
     
     private Float jsf22Bugfix() {
+        shopFailure = null;
         float res = 0;
         return res;
     }
@@ -284,7 +285,6 @@ public class loginManager implements Serializable{
     public Float clearBasket(){
         
         try{
-            shopfacade.reduceItemQuantitiesByUserBasket(currentUser.getUserName());
             shopfacade.clearUserBasket(currentUser.getUserName());
             
             allItems = shopfacade.getItems();
@@ -339,6 +339,22 @@ public class loginManager implements Serializable{
         try{
             Item it = new Item(newItemName, newItemQuantity, newItemPrice);
             shopfacade.addItem(it);
+            basketItems = shopfacade.getUserBasket(currentUser.getUserName());
+            userTotal = shopfacade.getUserBasketTotalPrice(currentUser.getUserName());
+            allItems = shopfacade.getItems();
+            allUsers = shopfacade.getUsers();
+        }catch(Exception e){
+            handleException(e);
+            return 1f;
+        }
+        return jsf22Bugfix();
+    }
+    
+    public Float removeItem(){
+        try{
+            shopfacade.deleteItem(newItemName);
+            basketItems = shopfacade.getUserBasket(currentUser.getUserName());
+            userTotal = shopfacade.getUserBasketTotalPrice(currentUser.getUserName());
             allItems = shopfacade.getItems();
             allUsers = shopfacade.getUsers();
         }catch(Exception e){

@@ -67,8 +67,13 @@
                 <h:outputText id="currentTemporaryPrice" value="#{it.itemPrice}"/> 
             </h:column>
             
-            
-            
+            <h:column rendered="#{loginManager.currentUser.userAdmin == true}">
+                <h:form>
+                    <h:commandButton value="Delete" action="#{loginManager.removeItem}">
+                        <f:setPropertyActionListener target="#{loginManager.newItemName}" value="#{it.itemName}" />
+                    </h:commandButton>
+                </h:form>
+            </h:column>
             <h:column rendered="#{loginManager.currentUser.userAdmin == true}">
                 <h:form>
                     <h:outputLabel for="newItemQuantity" value="New Item Quantity: "/>

@@ -45,7 +45,11 @@ public class ShopFacade {
         entityManager.merge(item);
     }
 
-    public void deleteItem(Item item) throws Exception {
+    public void deleteItem(String itemName) throws Exception {
+        Item item = entityManager.find(Item.class, itemName);
+        if (item == null) {
+            throw new Exception("No Item with name " + itemName);
+        }
         entityManager.remove(item);
     }
 
@@ -126,6 +130,8 @@ public class ShopFacade {
         List<Item> basket = user.getUserBasketList();
         for (Item item:basket){
             ItemInterface realItem = getItem(item.getItemName());
+            if (realItem == null)
+                realItem = new Item(item.getItemName(), 0, 0);
             basket.get(basket.indexOf(item)).setItemPrice(realItem.getItemPrice()*item.getItemQuantity());
         }
         return basket;
@@ -140,6 +146,8 @@ public class ShopFacade {
         Float total = 0f;
         for (Item item:basket){
             ItemInterface realItem = getItem(item.getItemName());
+            if (realItem == null)
+                realItem = new Item(item.getItemName(), 0, 0);
             total += realItem.getItemPrice()*item.getItemQuantity();
         }
         return total;
@@ -153,6 +161,9 @@ public class ShopFacade {
         List<Item> basket = user.getUserBasketList();
         for (Item item:basket){
             ItemInterface realItem = getItem(item.getItemName());
+            if (realItem == null){
+                throw new Exception("No Item with name " + item.getItemName());
+            }
             if (realItem.getItemQuantity() < item.getItemQuantity()) {
                 throw new Exception("Not enough "+item.getItemName()+" items in inventory");
             }
