@@ -1,6 +1,8 @@
 package shop.controller;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 /**
  *
@@ -8,7 +10,10 @@ import javax.ejb.Stateless;
  */
 @Stateless
 public class ShopFacade {
-
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
+    @PersistenceContext(unitName = "shopPU")
+    private EntityManager em;
 }
+
+/**
+ * This class should provide functionality to obtain users and items from the database
+ */
