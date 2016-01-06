@@ -5,6 +5,8 @@
  */
 package shop.model;
 
+import java.util.List;
+
 /**
  *
  * @author trabladorr
@@ -16,4 +18,8 @@ public interface UserInterface {
     public boolean getUserAdmin();
     public boolean getUserBanned();
     public void setUserBanned(boolean banned);
+    public String getUserBasket();
+    public void setUserBasket(String userBasket);
+    public List<Item> getUserBasketList();
+    public void addToUserBasket(Item item);
 }
