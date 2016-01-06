@@ -124,13 +124,24 @@ public class loginManager implements Serializable{
         return temporaryItem;
     }
     
-    public void setTemporaryItemAmount(int u){
+    public void setTemporaryItemAmount(Integer u){
         temporaryItemAmount = u;
     }
     
-    public int getTemporaryItemAmount(){
+    public Integer getTemporaryItemAmount(){
         return temporaryItemAmount;
     }
+    
+    public void setNewItemPrice(Integer u){
+        newItemPrice = u;
+    }
+    
+    public Integer getNewItemPrice(){
+        return newItemPrice;
+    }
+    
+    
+    
     
     public void setCurrentUser(UserInterface u){
         currentUser = u;
@@ -166,11 +177,11 @@ public class loginManager implements Serializable{
         return newItemName;
     }
     
-    public void setNewItemQuantity(int u){
+    public void setNewItemQuantity(Integer u){
         newItemQuantity = u;
     }
     
-    public int getNewItemQuantity(){
+    public Integer getNewItemQuantity(){
         return newItemQuantity;
     }
     

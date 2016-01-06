@@ -21,10 +21,10 @@
             </h:form>
             <p>
             <h:outputLabel for="currentBasket" rendered="#{loginManager.currentUser != null}"  value=" Your Basket: "/>
-            <h:outputText id="currentBasket" value="#{exManager.userBasket}"/> 
+            <h:outputText id="currentBasket" value="#{loginManager.userBasket}"/> 
       
             <h:outputLabel for="currentBasketPrice" rendered="#{loginManager.currentUser != null}"  value=" Total: "/>
-            <h:outputText id="currentBasketPrice" value="#{exManager.userTotal}"/> /
+            <h:outputText id="currentBasketPrice" value="#{loginManager.userTotal}"/> /
             </p>
         </p>
         
@@ -33,6 +33,9 @@
         
         <h:dataTable value="#{loginManager.allItems}" var="it">
             <h:column>
+                <h:outputLabel for="currentTemporaryName" value="Item: "/>
+                <h:outputText id="currentTemporaryName" value="#{it.itemName}"/> 
+                
                 <h:outputLabel for="currentTemporaryAmount" value="Units available: "/>
                 <h:outputText id="currentTemporaryAmount" value="#{it.itemQuantity}"/> 
             
@@ -47,8 +50,8 @@
         <h:outputLabel for="newItemAmount" value="Amount Desired: "/>
         <h:inputText id="newItemAmount" value="#{loginManager.temporaryItemAmount}"/>
         
-        <h:outputLabel for="newtemporaryItem" value="Item Desired: "/>
-        <h:inputText id="newtempoaryItem" value="#{loginManager.temporaryItem}"/>
+        <h:outputLabel for="temporaryItem" value="Item Desired: "/>
+        <h:inputText id="tempoaryItem" value="#{loginManager.temporaryItem}"/>
         
         <p>
             <h:commandButton value="Add to Basket" action="#{loginManager.addToBasket}"/>
@@ -60,17 +63,17 @@
                 <h:outputLabel for="newItemName" rendered="#{loginManager.currentUser.userAdmin == true}" value="Name for the new Item: "/>
                 <h:inputText id="newItemName" rendered="#{loginManager.currentUser.userAdmin == true}" value="#{loginManager.newItemName}"/>
                 <h:outputLabel for="newItemQuantity" rendered="#{loginManager.currentUser.userAdmin == true}" value="New Item Quantity: "/>
-                <h:inputText id="newItemQuantity" rendered="#{loginManager.currentUser.userAdmin == true}" value="#{exManager.newItemQuantity}"/>
+                <h:inputText id="newItemQuantity" rendered="#{loginManager.currentUser.userAdmin == true}" value="#{loginManager.newItemQuantity}"/>
                 <h:outputLabel for="newItemPrice" rendered="#{loginManager.currentUser.userAdmin == true}" value="New Item Price: "/>
-                <h:inputText id="newItemPrice" rendered="#{loginManager.currentUser.userAdmin == true}" value="#{exManager.newItemPrice}"/>
+                <h:inputText id="newItemPrice" rendered="#{loginManager.currentUser.userAdmin == true}" value="#{loginManager.newItemPrice}"/>
             </p>
             <p>
-                <h:commandButton value="Add Item to Inventory" rendered="#{loginManager.currentUser.userAdmin == true}" action="#{exManager.addItem}"/>
+                <h:commandButton value="Add Item to Inventory" rendered="#{loginManager.currentUser.userAdmin == true}" action="#{loginManager.addItem}"/>
             </p>
                 <h:outputLabel for="bannedUserName" rendered="#{loginManager.currentUser.userAdmin == true}" value="Enter user to be banned/unbanned: "/>
                 <h:inputText id="bannedUserName" rendered="#{loginManager.currentUser.userAdmin == true}" value="#{loginManager.bannedUserName}"/>
-                <h:commandButton value="Ban!" rendered="#{loginManager.currentUser.userAdmin == true}" action="#{exManager.banUser}"/>
-                <h:commandButton value="Unban" rendered="#{loginManager.currentUser.userAdmin == true}" action="#{exManager.unbanUser}"/>
+                <h:commandButton value="Ban!" rendered="#{loginManager.currentUser.userAdmin == true}" action="#{loginManager.banUser}"/>
+                <h:commandButton value="Unban" rendered="#{loginManager.currentUser.userAdmin == true}" action="#{loginManager.unbanUser}"/>
             <p>
                 
             </p>
