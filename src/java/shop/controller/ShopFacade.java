@@ -45,6 +45,14 @@ public class ShopFacade {
         entityManager.persist(user);
     }
     
+    public UserInterface getUser(String userName) throws Exception{
+        UserInterface user = entityManager.find(ShopUser.class, userName);
+        if (user == null) {
+            throw new Exception("No User with name " + userName);
+        }
+        return user;
+    }
+    
     public void setUserBanned(String userName, boolean banned) throws Exception {
         UserInterface user = entityManager.find(ShopUser.class, userName);
         if (user == null) {

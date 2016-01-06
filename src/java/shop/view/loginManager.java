@@ -27,7 +27,7 @@ public class loginManager implements Serializable{
     
     private ShopFacade shopfacade;
     
-    private User currentUsername;
+    private UserInterface currentUser;
     
     private String newUsername;
     private String newPassword;
@@ -106,12 +106,12 @@ public class loginManager implements Serializable{
         return temporaryItemAmount;
     }
     
-    public void setCurrentUsername(User u){
-        currentUsername = u;
+    public void setCurrentUser(UserInterface u){
+        currentUser = u;
     }
     
-    public User getCurrentUsername(){
-        return currentUsername;
+    public UserInterface getCurrentUser(){
+        return currentUser;
     }
     
     public void setNewItemName(String u){
@@ -136,25 +136,74 @@ public class loginManager implements Serializable{
      */
     
     
-    public void login(){
-        startConversation();
-        shopFailure = null;
-    }
-    
-    public void register(){
-        startConversation();
-        shopFailure=null;
-    }
-    
-    public void buy(){
+    public Float login(){
+        try{
+            startConversation();
+            shopFailure = null;
+            UserInterface u = shopfacade.getUser(newUsername);
+            if(u==null){//TODO Or if an exception is thrown?
+                throw new Exception("Wrong password or username");
+            }
+
+            if(!u.getUserPassword().equals(newPassword)){
+                throw new Exception("Wrong password or username");
+            }
+            currentUser = u;
+        }catch(Exception e){
+            handleException(e);
+        }
+        return jsf22Bugfix();
         
     }
     
-    public void addToBasket(){
+    public Float register(){
+        try{
+            startConversation();
+            shopFailure=null;
+            if(null!=shopfacade.getUser(newUsername)){
+                throw new Exception("User Already Exists");
+            }
+            if(newUsername.equals("admin")){
+                ShopUser u = new ShopUser(newUsername,newPassword, true, false);
+                shopfacade.addUser(u);
+            }
+            else{
+                ShopUser u = new ShopUser(newUsername,newPassword, false, false);
+                shopfacade.addUser(u);
+            }
+            currentUser = shopfacade.getUser(newUsername);
+        }catch(Exception e){
+            handleException(e);
+        }
+        return jsf22Bugfix();
         
     }
     
-    public void addItem(){
+    public Float buy(){
+        
+    }
+    
+    public Float addToBasket(){
+        try{
+            currentUser.addToBasket(temporaryItem,temporaryItemAmount);
+            
+        }catch(Exception e){
+            handleException(e);
+        }
+        return jsf22Bugfix();
+    }
+    
+    public Float addItem(){
+        try{
+            shopfacade.addItem(newItemName);
+            
+        }catch(Exception e){
+            handleException(e);
+        }
+        return jsf22Bugfix();
+    }
+    
+    public Float logout(){
         
     }
 }
