@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.enterprise.context.Conversation;
@@ -23,8 +24,9 @@ import javax.inject.Named;
 public class loginManager implements Serializable{
     
     //SerialID?? TO BE CHECKED
-    @EJB
+    private static final long serialVersionUID = 16247164405L;
     
+    @EJB
     private ShopFacade shopfacade;
     
     private UserInterface currentUser;
@@ -35,13 +37,20 @@ public class loginManager implements Serializable{
     private String temporaryItem;
     private Integer temporaryItemAmount;
     
+    private String userBasket;
+    private Float userTotal;
+    
     private String newItemName;
     private Integer newItemQuantity;
+    private Integer newItemPrice;
+    
+    private String bannedUserName;
     
     private Exception shopFailure;
     
     @Inject
     private Conversation conversation;
+    private List<Item> allItems;
     
     private void startConversation() {
         if (conversation.isTransient()) {
@@ -82,6 +91,23 @@ public class loginManager implements Serializable{
         return newUsername;
     }
     
+    public void setBannedUserName(String u){
+        bannedUserName = u;
+    }
+    
+    public String getBannedUserName(){
+        return bannedUserName;
+    }
+    
+      
+    public void setUserBasket(String u){
+        userBasket = u;
+    }
+    
+    public String getUserBasket(){
+        return userBasket;
+    }
+    
     public void setNewPassword(String u){
         newPassword = u;
     }
@@ -113,6 +139,24 @@ public class loginManager implements Serializable{
     public UserInterface getCurrentUser(){
         return currentUser;
     }
+    
+    public void setUserTotal(Float u){
+        userTotal = u;
+    }
+    
+    public Float getUserTotal(){
+        return userTotal;
+    }
+    
+    public void setAllItems(List<Item> u){
+        allItems = u;
+    }
+    
+    public List<Item> getAllItems(){
+        return allItems;
+    }
+    
+    
     
     public void setNewItemName(String u){
         newItemName = u;
@@ -149,6 +193,9 @@ public class loginManager implements Serializable{
                 throw new Exception("Wrong password or username");
             }
             currentUser = u;
+            userBasket = shopfacade.getUserBasketPrintable(newUsername);
+            userTotal = shopfacade.getUserBasketTotalPrice(newUsername);
+            allItems = shopfacade.getItems();
         }catch(Exception e){
             handleException(e);
         }
@@ -164,14 +211,18 @@ public class loginManager implements Serializable{
                 throw new Exception("User Already Exists");
             }
             if(newUsername.equals("admin")){
-                ShopUser u = new ShopUser(newUsername,newPassword, true, false);
+                
+                ShopUser u = new ShopUser(newUsername,newPassword, true, false,null);
                 shopfacade.addUser(u);
             }
             else{
-                ShopUser u = new ShopUser(newUsername,newPassword, false, false);
-                shopfacade.addUser(u);
+                ShopUser us = new ShopUser(newUsername,newPassword, false, false,null);
+                shopfacade.addUser(us);
             }
             currentUser = shopfacade.getUser(newUsername);
+            userBasket = shopfacade.getUserBasketPrintable(newUsername);
+            userTotal = shopfacade.getUserBasketTotalPrice(newUsername);
+            allItems = shopfacade.getItems();
         }catch(Exception e){
             handleException(e);
         }
@@ -181,11 +232,29 @@ public class loginManager implements Serializable{
     
     public Float buy(){
         
+        try{
+            shopfacade.clearUserBasket(currentUser.getUserName());
+            
+            allItems = shopfacade.getItems();
+            userBasket = shopfacade.getUserBasketPrintable(currentUser.getUserName());
+            userTotal = shopfacade.getUserBasketTotalPrice(currentUser.getUserName());
+        }catch(Exception e){
+            handleException(e);
+        }
+        return jsf22Bugfix();
+        
     }
     
     public Float addToBasket(){
         try{
-            currentUser.addToBasket(temporaryItem,temporaryItemAmount);
+            ItemInterface it = shopfacade.getItem(temporaryItem);
+            if(it.getItemQuantity()<temporaryItemAmount){
+                throw new Exception("Cannot buy more units than those available");
+            }
+            Item item = new Item(temporaryItem,temporaryItemAmount,it.getItemPrice());
+            currentUser.addToUserBasket(item);
+            userBasket = shopfacade.getUserBasketPrintable(currentUser.getUserName());
+            userTotal = shopfacade.getUserBasketTotalPrice(currentUser.getUserName());
             
         }catch(Exception e){
             handleException(e);
@@ -195,15 +264,44 @@ public class loginManager implements Serializable{
     
     public Float addItem(){
         try{
-            shopfacade.addItem(newItemName);
-            
+            Item it = new Item(newItemName, newItemQuantity, newItemPrice);
+            shopfacade.addItem(it);
+            allItems = shopfacade.getItems();
         }catch(Exception e){
             handleException(e);
         }
         return jsf22Bugfix();
     }
     
-    public Float logout(){
-        
+    public String logout(){
+        currentUser=null;
+        //stopConversation();
+        return "logout";
+    }
+    
+    public Float banUser(){
+        try{
+            UserInterface u = shopfacade.getUser(bannedUserName);
+            if(u==null){
+                throw new Exception("No such user in the database");
+            }
+            u.setUserBanned(true);
+        }catch(Exception e){
+            handleException(e);
+        }
+        return jsf22Bugfix();
+    }
+    
+    public Float unbanUser(){
+        try{
+            UserInterface u = shopfacade.getUser(bannedUserName);
+            if(u==null){
+                throw new Exception("No such user in the database");
+            }
+            u.setUserBanned(false);
+        }catch(Exception e){
+            handleException(e);
+        }
+        return jsf22Bugfix();
     }
 }

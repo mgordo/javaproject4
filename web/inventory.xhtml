@@ -13,43 +13,63 @@
         <p>
             <p>
             <h:outputLabel for="username" rendered="#{loginManager.currentUser != null}"  value="Username: "/>
-            <h:outputText id="username" value="#{loginManager.currentUser.Name}"/>
+            <h:outputText id="username" value="#{loginManager.currentUser.userName}"/>
             </p>
             <h:commandButton value="LogOut" action="#{loginManager.logout}"/>
             <h:commandButton value="Buy Basket" action="#{loginManager.buy}"/>
             <p>
             <h:outputLabel for="currentBasket" rendered="#{loginManager.currentUser != null}"  value=" Your Basket: "/>
-            <h:outputText id="currentExAmount" value="#{exManager.currentUser.basket}"/> /TODO SHOW THE BASKET
+            <h:outputText id="currentBasket" value="#{exManager.userBasket}"/> 
       
+            <h:outputLabel for="currentBasketPrice" rendered="#{loginManager.currentUser != null}"  value=" Total: "/>
+            <h:outputText id="currentBasketPrice" value="#{exManager.userTotal}"/> /
         </p>
         
         <h:form>
         <h3>Inventory</h3>
-            <p>
-                <h:outputLabel for="newItemAmount" value="Amount: "/>
-                <h:inputText id="newItemAmount" value="#{loginManager.temporaryItemAmount}"/>
+        
+        <h:dataTable value="#{loginManager.allItems}" var="it">
+            <h:column>
+                <h:outputLabel for="currentTemporaryAmount" value="Units available: "/>
+                <h:outputText id="currentTemporaryAmount" value="#{it.itemQuantity}"/> 
             
-            <h:selectOneMenu value="#{loginManager.temporaryItem}">
-                <f:selectItems value="#{loginManager.allItems}" />
-   	    </h:selectOneMenu>
-            <h:outputLabel for="currentTemporaryAmount" rendered="#{loginManager.temporaryItem != null}"  value=" This item has the following number of units available: "/>
-            <h:outputText id="currentTemporaryAmount" value="#{loginManager.temporaryItem.totalAvailable}"/> 
+                <h:outputLabel for="currentTemporaryPrice"  value="Price per unit (SEK): "/>
+                <h:outputText id="currentTemporaryPrice" value="#{it.itemPrice}"/> 
                 
-            </p>
+                
+            </h:column>
+        </h:dataTable>
         
-            <p>
-                <h:commandButton value="Add to Basket" action="#{loginManager.addToBasket}"/>
-            </p>
         
-
+        <h:outputLabel for="newItemAmount" value="Amount Desired: "/>
+        <h:inputText id="newItemAmount" value="#{loginManager.temporaryItemAmount}"/>
+        
+        <h:outputLabel for="newtemporaryItem" value="Item Desired: "/>
+        <h:inputText id="newtempoaryItem" value="#{loginManager.temporaryItem}"/>
+        
+        <p>
+            <h:commandButton value="Add to Basket" action="#{loginManager.addToBasket}"/>
+        </p>
+        
+        
+        <h3>Additional Commands</h3>
             <p>
-                <h:outputLabel for="newItemName" rendered="#{loginManager.currentUser.isAdmin != null}" value="Name for the new Item: "/>
+                <h:outputLabel for="newItemName" rendered="#{loginManager.currentUser.userAdmin == true}" value="Name for the new Item: "/>
                 <h:inputText id="newItemName" value="#{loginManager.newItemName}"/>
-                <h:outputLabel for="newItemQuantity" rendered="#{loginManager.currentUser.isAdmin != null}" value=" Item Quantity: "/>
+                <h:outputLabel for="newItemQuantity" rendered="#{loginManager.currentUser.userAdmin == true}" value="New Item Quantity: "/>
                 <h:inputText id="newItemQuantity" value="#{exManager.newItemQuantity}"/>
+                <h:outputLabel for="newItemPrice" rendered="#{loginManager.currentUser.userAdmin == true}" value="New Item Price: "/>
+                <h:inputText id="newItemPrice" value="#{exManager.newItemPrice}"/>
             </p>
             <p>
-                <h:commandButton value="Add Item to Inventory" rendered="#{loginManager.currentUser.isAdmin != null}" action="#{exManager.addItem}"/>
+                <h:commandButton value="Add Item to Inventory" rendered="#{loginManager.currentUser.userAdmin == true}" action="#{exManager.addItem}"/>
+            </p>
+                <h:outputLabel for="bannedUserName" rendered="#{loginManager.currentUser.userAdmin == true}" value="Enter user to be banned/unbanned: "/>
+                <h:inputText id="bannedUserName" value="#{loginManager.bannedUserName}"/>
+                <h:commandButton value="Ban!" rendered="#{loginManager.currentUser.userAdmin == true}" action="#{exManager.banUser}"/>
+                <h:commandButton value="Unban" rendered="#{loginManager.currentUser.userAdmin == true}" action="#{exManager.unbanUser}"/>
+            <p>
+                
             </p>
             <hr/>
         
