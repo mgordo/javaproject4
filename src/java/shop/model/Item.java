@@ -16,26 +16,58 @@ import javax.persistence.Id;
  * @author Miguel
  */
 @Entity
-public class Item implements Serializable {
+public class Item implements ItemInterface, Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
+    private String itemName;
+    
+    private int itemQuantity;
+    private float itemPrice;
 
-    public String getId() {
-        return id;
+    public Item() {
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public Item(String itemName, int itemQuantity, float itemPrice){
+        this.itemName = itemName;
+        this.itemQuantity = itemQuantity;
+        this.itemPrice = itemPrice;
+    }
+    
+    
+    @Override
+    public String getItemName() {
+        return itemName;
+    }
+
+    public void setId(String itemName) {
+        this.itemName = itemName;
+    }
+    
+    @Override
+    public int getItemQuantity(){
+        return itemQuantity;
+    }
+
+    @Override
+    public void setItemQuantity(int itemQuantity) {
+        this.itemQuantity = itemQuantity;
+    }
+    
+    @Override
+    public float getItemPrice(){
+        return itemPrice;
+    }
+
+    public void setItemPrice(float itemPrice) {
+        this.itemPrice = itemPrice;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
+        return itemName.hashCode();
     }
 
     @Override
@@ -45,15 +77,15 @@ public class Item implements Serializable {
             return false;
         }
         Item other = (Item) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
+        if ((this.itemName.equals(other.getItemName()))) {
+            return true;
         }
         return true;
     }
 
     @Override
     public String toString() {
-        return "shop.model.Item[ id=" + id + " ]";
+        return "shop.model.Item("+itemName+":"+itemQuantity+":"+itemPrice+")";
     }
     
 }
