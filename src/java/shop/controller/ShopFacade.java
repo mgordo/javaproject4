@@ -38,9 +38,6 @@ public class ShopFacade {
 
     public ItemInterface getItem(String itemName) throws Exception {
         ItemInterface item = entityManager.find(Item.class, itemName);
-        if (item == null) {
-            throw new Exception("No Item with name " + itemName);
-        }
         return item;
     }
     
@@ -55,9 +52,6 @@ public class ShopFacade {
     
     public UserInterface getUser(String userName) throws Exception{
         UserInterface user = entityManager.find(ShopUser.class, userName);
-        if (user == null) {
-            throw new Exception("No User with name " + userName);
-        }
         return user;
     }
     
