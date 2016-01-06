@@ -15,14 +15,17 @@
             <h:outputLabel for="username" rendered="#{loginManager.currentUser != null}"  value="Username: "/>
             <h:outputText id="username" value="#{loginManager.currentUser.userName}"/>
             </p>
+            <h:form>
             <h:commandButton value="LogOut" action="#{loginManager.logout}"/>
             <h:commandButton value="Buy Basket" action="#{loginManager.buy}"/>
+            </h:form>
             <p>
             <h:outputLabel for="currentBasket" rendered="#{loginManager.currentUser != null}"  value=" Your Basket: "/>
             <h:outputText id="currentBasket" value="#{exManager.userBasket}"/> 
       
             <h:outputLabel for="currentBasketPrice" rendered="#{loginManager.currentUser != null}"  value=" Total: "/>
             <h:outputText id="currentBasketPrice" value="#{exManager.userTotal}"/> /
+            </p>
         </p>
         
         <h:form>
@@ -52,20 +55,20 @@
         </p>
         
         
-        <h3>Additional Commands</h3>
+        <h3  rendered="#{loginManager.currentUser.userAdmin == true}">Additional Commands</h3>
             <p>
                 <h:outputLabel for="newItemName" rendered="#{loginManager.currentUser.userAdmin == true}" value="Name for the new Item: "/>
-                <h:inputText id="newItemName" value="#{loginManager.newItemName}"/>
+                <h:inputText id="newItemName" rendered="#{loginManager.currentUser.userAdmin == true}" value="#{loginManager.newItemName}"/>
                 <h:outputLabel for="newItemQuantity" rendered="#{loginManager.currentUser.userAdmin == true}" value="New Item Quantity: "/>
-                <h:inputText id="newItemQuantity" value="#{exManager.newItemQuantity}"/>
+                <h:inputText id="newItemQuantity" rendered="#{loginManager.currentUser.userAdmin == true}" value="#{exManager.newItemQuantity}"/>
                 <h:outputLabel for="newItemPrice" rendered="#{loginManager.currentUser.userAdmin == true}" value="New Item Price: "/>
-                <h:inputText id="newItemPrice" value="#{exManager.newItemPrice}"/>
+                <h:inputText id="newItemPrice" rendered="#{loginManager.currentUser.userAdmin == true}" value="#{exManager.newItemPrice}"/>
             </p>
             <p>
                 <h:commandButton value="Add Item to Inventory" rendered="#{loginManager.currentUser.userAdmin == true}" action="#{exManager.addItem}"/>
             </p>
                 <h:outputLabel for="bannedUserName" rendered="#{loginManager.currentUser.userAdmin == true}" value="Enter user to be banned/unbanned: "/>
-                <h:inputText id="bannedUserName" value="#{loginManager.bannedUserName}"/>
+                <h:inputText id="bannedUserName" rendered="#{loginManager.currentUser.userAdmin == true}" value="#{loginManager.bannedUserName}"/>
                 <h:commandButton value="Ban!" rendered="#{loginManager.currentUser.userAdmin == true}" action="#{exManager.banUser}"/>
                 <h:commandButton value="Unban" rendered="#{loginManager.currentUser.userAdmin == true}" action="#{exManager.unbanUser}"/>
             <p>
