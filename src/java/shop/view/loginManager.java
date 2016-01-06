@@ -35,7 +35,7 @@ public class loginManager implements Serializable{
     private String newPassword;
     
     private String temporaryItem;
-    private Integer temporaryItemAmount;
+    private Integer temporaryItemAmount = 0;
     
     private String userBasket;
     private Float userTotal;
@@ -180,7 +180,7 @@ public class loginManager implements Serializable{
      */
     
     
-    public Float login(){
+    public String login(){
         try{
             startConversation();
             shopFailure = null;
@@ -199,11 +199,11 @@ public class loginManager implements Serializable{
         }catch(Exception e){
             handleException(e);
         }
-        return jsf22Bugfix();
+        return "login";
         
     }
     
-    public Float register(){
+    public String register(){
         try{
             startConversation();
             shopFailure=null;
@@ -226,7 +226,7 @@ public class loginManager implements Serializable{
         }catch(Exception e){
             handleException(e);
         }
-        return jsf22Bugfix();
+        return "login";
         
     }
     
