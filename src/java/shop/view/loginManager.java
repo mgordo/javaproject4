@@ -185,6 +185,13 @@ public class loginManager implements Serializable{
         return newItemQuantity;
     }
     
+    public Exception setShopFailure(){
+        return shopFailure;
+    }
+    
+    public Exception getShopFailure(){
+        return shopFailure;
+    }
     
     /**
      * METHODS FOR ACTIONS OF THE USER
@@ -209,6 +216,7 @@ public class loginManager implements Serializable{
             allItems = shopfacade.getItems();
         }catch(Exception e){
             handleException(e);
+            return "error";
         }
         return "login";
         
@@ -236,6 +244,7 @@ public class loginManager implements Serializable{
             allItems = shopfacade.getItems();
         }catch(Exception e){
             handleException(e);
+            return "error";
         }
         return "login";
         
@@ -251,6 +260,7 @@ public class loginManager implements Serializable{
             userTotal = shopfacade.getUserBasketTotalPrice(currentUser.getUserName());
         }catch(Exception e){
             handleException(e);
+            return 1f;
         }
         return jsf22Bugfix();
         
@@ -263,12 +273,13 @@ public class loginManager implements Serializable{
                 throw new Exception("Cannot buy more units than those available");
             }
             Item item = new Item(temporaryItem,temporaryItemAmount,it.getItemPrice());
-            currentUser.addToUserBasket(item);
+            shopfacade.addToUserBasket(currentUser.getUserName(), item);
             userBasket = shopfacade.getUserBasketPrintable(currentUser.getUserName());
             userTotal = shopfacade.getUserBasketTotalPrice(currentUser.getUserName());
             
         }catch(Exception e){
             handleException(e);
+            return 1f;
         }
         return jsf22Bugfix();
     }
@@ -280,6 +291,7 @@ public class loginManager implements Serializable{
             allItems = shopfacade.getItems();
         }catch(Exception e){
             handleException(e);
+            return 1f;
         }
         return jsf22Bugfix();
     }
@@ -299,6 +311,7 @@ public class loginManager implements Serializable{
             u.setUserBanned(true);
         }catch(Exception e){
             handleException(e);
+            return 1f;
         }
         return jsf22Bugfix();
     }
@@ -312,6 +325,7 @@ public class loginManager implements Serializable{
             u.setUserBanned(false);
         }catch(Exception e){
             handleException(e);
+            return 1f;
         }
         return jsf22Bugfix();
     }

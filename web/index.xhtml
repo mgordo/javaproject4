@@ -30,6 +30,10 @@
                 <h:commandButton value="Register" action="#{loginManager.register}"/>
             </p>
         </h:form>
+        
+        <font color="red">
+            <h:outputLabel for="newItemName" rendered="#{loginManager.shopFailure != null}" value="#{loginManager.shopFailure.message}"/>
+        </font>
     </h:body>
 </html>
 

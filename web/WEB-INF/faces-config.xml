@@ -9,12 +9,19 @@
                     <from-outcome>login</from-outcome>
                     <to-view-id>/inventory.xhtml</to-view-id>
                 </navigation-case>
+                <navigation-case>
+                    <from-outcome>error</from-outcome>
+                    <to-view-id>/index.xhtml</to-view-id>
+                </navigation-case>
               </navigation-rule>
               <navigation-rule>
                 <from-view-id>/inventory.xhtml</from-view-id>
                 <navigation-case>
                     <from-outcome>logout</from-outcome>
                     <to-view-id>/index.xhtml</to-view-id>
+                </navigation-case>
+                <navigation-case>
+                    <to-view-id>/inventory.xhtml</to-view-id>
                 </navigation-case>
               </navigation-rule>
 </faces-config>
