@@ -399,8 +399,8 @@ public class loginManager implements Serializable{
             if(u==null){
                 throw new Exception("No such user in the database");
             }
-            u.setUserBanned(false);
             shopfacade.setUserBanned(bannedUserName, false);
+            allUsers = shopfacade.getUsers();
         }catch(Exception e){
             handleException(e);
             return 1f;
