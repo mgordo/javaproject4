@@ -20,6 +20,10 @@ public class ShopFacade {
     private EntityManager entityManager;
     
     public void addItem(Item item) throws Exception {
+        ItemInterface existing = entityManager.find(Item.class, item.getItemName());
+        if (existing != null) {
+            throw new Exception("Item with name " + item.getItemName() + "already exists.");
+        }
         entityManager.persist(item);
     }
     
@@ -29,7 +33,16 @@ public class ShopFacade {
             throw new Exception("No Item with name " + itemName);
         }
         item.setItemQuantity(quantity);
-        entityManager.refresh(item);
+        entityManager.merge(item);
+    }
+    
+    public void setItemPrice(String itemName, float price) throws Exception {
+        ItemInterface item = entityManager.find(Item.class, itemName);
+        if (item == null) {
+            throw new Exception("No Item with name " + itemName);
+        }
+        item.setItemPrice(price);
+        entityManager.merge(item);
     }
 
     public void deleteItem(Item item) throws Exception {
@@ -61,7 +74,7 @@ public class ShopFacade {
             throw new Exception("No User with name " + userName);
         }
         user.setUserBanned(banned);
-        entityManager.refresh(user);
+        entityManager.merge(user);
     }
 
     public void deleteUser(ShopUser user) throws Exception {
@@ -79,7 +92,7 @@ public class ShopFacade {
             throw new Exception("No User with name " + userName);
         }
         user.addToUserBasket(item);
-        entityManager.refresh(user);
+        entityManager.merge(user);
     }
     
     public void clearUserBasket(String userName) throws Exception {
@@ -88,7 +101,7 @@ public class ShopFacade {
             throw new Exception("No User with name " + userName);
         }
         user.setUserBasket("");
-        entityManager.refresh(user);
+        entityManager.merge(user);
     }
     
     public String getUserBasketPrintable(String userName) throws Exception {
@@ -103,6 +116,19 @@ public class ShopFacade {
             basketPrintable += item.getItemName()+", "+item.getItemQuantity()+" item(s), total: "+realItem.getItemPrice()*item.getItemQuantity()+"<br>";
         }
         return basketPrintable;
+    }
+    
+    public List<Item> getUserBasket(String userName) throws Exception {
+        UserInterface user = entityManager.find(ShopUser.class, userName);
+        if (user == null) {
+            throw new Exception("No User with name " + userName);
+        }
+        List<Item> basket = user.getUserBasketList();
+        for (Item item:basket){
+            ItemInterface realItem = getItem(item.getItemName());
+            basket.get(basket.indexOf(item)).setItemPrice(realItem.getItemPrice()*item.getItemQuantity());
+        }
+        return basket;
     }
     
     public float getUserBasketTotalPrice(String userName) throws Exception {
@@ -134,7 +160,7 @@ public class ShopFacade {
         for (Item item:basket){
             ItemInterface realItem = getItem(item.getItemName());
             realItem.setItemQuantity(realItem.getItemQuantity()-item.getItemQuantity());
-            entityManager.refresh(realItem);
+            entityManager.merge(realItem);
         }
     }
 }

@@ -94,7 +94,7 @@ public class ShopUser implements UserInterface, Serializable {
         
     @Override
     public void addToUserBasket(Item item){
-        List<Item> basket = parseBasketString(userBasket);
+        List<Item> basket = parseBasketString(this.userBasket);
         if (basket.contains(item)){
             Item prev = basket.get(basket.indexOf(item));
             prev.setItemQuantity(prev.getItemQuantity()+item.getItemQuantity());
@@ -107,7 +107,7 @@ public class ShopUser implements UserInterface, Serializable {
                 return c1.getItemName().compareTo(c2.getItemName());
             }});
         
-        userBasket = createBasketString(basket);
+        this.userBasket = createBasketString(basket);
     }
 
     @Override
@@ -126,7 +126,7 @@ public class ShopUser implements UserInterface, Serializable {
         if ((this.userName.equals(other.getUserName()))) {
             return true;
         }
-        return true;
+        return false;
     }
 
     @Override

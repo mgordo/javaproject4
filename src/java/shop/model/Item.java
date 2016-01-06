@@ -60,6 +60,7 @@ public class Item implements ItemInterface, Serializable {
         return itemPrice;
     }
 
+    @Override
     public void setItemPrice(float itemPrice) {
         this.itemPrice = itemPrice;
     }
@@ -80,12 +81,12 @@ public class Item implements ItemInterface, Serializable {
         if ((this.itemName.equals(other.getItemName()))) {
             return true;
         }
-        return true;
+        return false;
     }
 
     @Override
     public String toString() {
-        return "shop.model.Item("+itemName+":"+itemQuantity+":"+itemPrice+")";
+        return itemName;
     }
     
 }

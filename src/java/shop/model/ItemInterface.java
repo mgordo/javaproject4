@@ -14,5 +14,6 @@ public interface ItemInterface {
     public String getItemName();
     public int getItemQuantity();
     public void setItemQuantity(int itemQuantity);
+    public void setItemPrice(float itemPrice);
     public float getItemPrice();
 }

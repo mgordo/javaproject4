@@ -4,11 +4,7 @@ package shop.view;
 import shop.controller.ShopFacade;
 import shop.model.*;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import javax.ejb.EJB;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
@@ -37,8 +33,11 @@ public class loginManager implements Serializable{
     private String temporaryItem;
     private Integer temporaryItemAmount = 0;
     
-    private String userBasket;
     private Float userTotal;
+    
+    private String modifiedItemName;
+    private Integer modifiedItemQuantity;
+    private Integer modifiedItemPrice;
     
     private String newItemName;
     private Integer newItemQuantity;
@@ -51,6 +50,8 @@ public class loginManager implements Serializable{
     @Inject
     private Conversation conversation;
     private List<Item> allItems;
+    private List<Item> basketItems;
+    private List<ShopUser> allUsers;
     
     private void startConversation() {
         if (conversation.isTransient()) {
@@ -65,7 +66,7 @@ public class loginManager implements Serializable{
     }
 
     private void handleException(Exception e) {
-        stopConversation();
+        //stopConversation();
         e.printStackTrace(System.err);
         shopFailure = e;
     }
@@ -97,15 +98,6 @@ public class loginManager implements Serializable{
     
     public String getBannedUserName(){
         return bannedUserName;
-    }
-    
-      
-    public void setUserBasket(String u){
-        userBasket = u;
-    }
-    
-    public String getUserBasket(){
-        return userBasket;
     }
     
     public void setNewPassword(String u){
@@ -140,9 +132,6 @@ public class loginManager implements Serializable{
         return newItemPrice;
     }
     
-    
-    
-    
     public void setCurrentUser(UserInterface u){
         currentUser = u;
     }
@@ -167,7 +156,21 @@ public class loginManager implements Serializable{
         return allItems;
     }
     
+    public void setBasketItems(List<Item> u){
+        basketItems = u;
+    }
     
+    public List<Item> getBasketItems(){
+        return basketItems;
+    }
+    
+    public void setAllUsers(List<ShopUser> u){
+        allUsers = u;
+    }
+    
+    public List<ShopUser> getAllUsers(){
+        return allUsers;
+    }
     
     public void setNewItemName(String u){
         newItemName = u;
@@ -183,6 +186,30 @@ public class loginManager implements Serializable{
     
     public Integer getNewItemQuantity(){
         return newItemQuantity;
+    }
+    
+    public void setModifiedItemName(String u){
+        modifiedItemName = u;
+    }
+    
+    public String getModifiedItemName(){
+        return modifiedItemName;
+    }
+    
+    public void setModifiedItemPrice(Integer u){
+        modifiedItemPrice = u;
+    }
+    
+    public Integer getModifiedItemPrice(){
+        return modifiedItemPrice;
+    }
+    
+    public void setModifiedItemQuantity(Integer u){
+        modifiedItemQuantity = u;
+    }
+    
+    public Integer getModifiedItemQuantity(){
+        return modifiedItemQuantity;
     }
     
     public Exception setShopFailure(){
@@ -206,14 +233,17 @@ public class loginManager implements Serializable{
             if(u==null){//TODO Or if an exception is thrown?
                 throw new Exception("Wrong password or username");
             }
-
             if(!u.getUserPassword().equals(newPassword)){
                 throw new Exception("Wrong password or username");
             }
+            if(u.getUserBanned()){
+                throw new Exception("You are banned!");
+            }
             currentUser = u;
-            userBasket = shopfacade.getUserBasketPrintable(newUsername);
+            basketItems = shopfacade.getUserBasket(newUsername);
             userTotal = shopfacade.getUserBasketTotalPrice(newUsername);
             allItems = shopfacade.getItems();
+            allUsers = shopfacade.getUsers();
         }catch(Exception e){
             handleException(e);
             return "error";
@@ -239,9 +269,10 @@ public class loginManager implements Serializable{
                 shopfacade.addUser(us);
             }
             currentUser = shopfacade.getUser(newUsername);
-            userBasket = shopfacade.getUserBasketPrintable(newUsername);
+            basketItems = shopfacade.getUserBasket(newUsername);
             userTotal = shopfacade.getUserBasketTotalPrice(newUsername);
             allItems = shopfacade.getItems();
+            allUsers = shopfacade.getUsers();
         }catch(Exception e){
             handleException(e);
             return "error";
@@ -250,13 +281,31 @@ public class loginManager implements Serializable{
         
     }
     
-    public Float buy(){
+    public Float clearBasket(){
         
         try{
             shopfacade.clearUserBasket(currentUser.getUserName());
             
             allItems = shopfacade.getItems();
-            userBasket = shopfacade.getUserBasketPrintable(currentUser.getUserName());
+            allUsers = shopfacade.getUsers();
+            basketItems = shopfacade.getUserBasket(currentUser.getUserName());
+            userTotal = shopfacade.getUserBasketTotalPrice(currentUser.getUserName());
+        }catch(Exception e){
+            handleException(e);
+            return 1f;
+        }
+        return jsf22Bugfix();
+    }
+    
+    public Float buy(){
+        
+        try{
+            shopfacade.reduceItemQuantitiesByUserBasket(currentUser.getUserName());
+            shopfacade.clearUserBasket(currentUser.getUserName());
+            
+            allItems = shopfacade.getItems();
+            allUsers = shopfacade.getUsers();
+            basketItems = shopfacade.getUserBasket(currentUser.getUserName());
             userTotal = shopfacade.getUserBasketTotalPrice(currentUser.getUserName());
         }catch(Exception e){
             handleException(e);
@@ -273,8 +322,9 @@ public class loginManager implements Serializable{
                 throw new Exception("Cannot buy more units than those available");
             }
             Item item = new Item(temporaryItem,temporaryItemAmount,it.getItemPrice());
+            
             shopfacade.addToUserBasket(currentUser.getUserName(), item);
-            userBasket = shopfacade.getUserBasketPrintable(currentUser.getUserName());
+            basketItems = shopfacade.getUserBasket(currentUser.getUserName());
             userTotal = shopfacade.getUserBasketTotalPrice(currentUser.getUserName());
             
         }catch(Exception e){
@@ -289,6 +339,31 @@ public class loginManager implements Serializable{
             Item it = new Item(newItemName, newItemQuantity, newItemPrice);
             shopfacade.addItem(it);
             allItems = shopfacade.getItems();
+            allUsers = shopfacade.getUsers();
+        }catch(Exception e){
+            handleException(e);
+            return 1f;
+        }
+        return jsf22Bugfix();
+    }
+    
+    public Float setItemQuantity(){
+        try{
+            shopfacade.setItemQuantity(modifiedItemName, modifiedItemQuantity);
+            allItems = shopfacade.getItems();
+            allUsers = shopfacade.getUsers();
+        }catch(Exception e){
+            handleException(e);
+            return 1f;
+        }
+        return jsf22Bugfix();
+    }
+    
+    public Float setItemPrice(){
+        try{
+            shopfacade.setItemPrice(modifiedItemName, modifiedItemPrice);
+            allItems = shopfacade.getItems();
+            allUsers = shopfacade.getUsers();
         }catch(Exception e){
             handleException(e);
             return 1f;
@@ -298,7 +373,7 @@ public class loginManager implements Serializable{
     
     public String logout(){
         currentUser=null;
-        //stopConversation();
+        stopConversation();
         return "logout";
     }
     
@@ -308,7 +383,8 @@ public class loginManager implements Serializable{
             if(u==null){
                 throw new Exception("No such user in the database");
             }
-            u.setUserBanned(true);
+            shopfacade.setUserBanned(bannedUserName, true);
+            allUsers = shopfacade.getUsers();
         }catch(Exception e){
             handleException(e);
             return 1f;
@@ -322,7 +398,8 @@ public class loginManager implements Serializable{
             if(u==null){
                 throw new Exception("No such user in the database");
             }
-            u.setUserBanned(false);
+            shopfacade.setUserBanned(bannedUserName, false);
+            allUsers = shopfacade.getUsers();
         }catch(Exception e){
             handleException(e);
             return 1f;

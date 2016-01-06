@@ -9,78 +9,152 @@
     <h:body>
         <h1>'Tis the Gnome Shoppe</h1>
         
-        <h3>Your Basket</h3>
+        <h3>Customer Information:</h3>
         <p>
             <p>
             <h:outputLabel for="username" rendered="#{loginManager.currentUser != null}"  value="Username: "/>
             <h:outputText id="username" value="#{loginManager.currentUser.userName}"/>
             </p>
             <h:form>
-            <h:commandButton value="LogOut" action="#{loginManager.logout}"/>
-            <h:commandButton value="Buy Basket" action="#{loginManager.buy}"/>
+                <h:commandButton value="LogOut" action="#{loginManager.logout}"/>
             </h:form>
-            <p>
-            <h:outputLabel for="currentBasket" rendered="#{loginManager.currentUser != null}"  value=" Your Basket: "/>
-            <h:outputText id="currentBasket" value="#{loginManager.userBasket}"/> 
-      
-            <h:outputLabel for="currentBasketPrice" rendered="#{loginManager.currentUser != null}"  value=" Total: "/>
-            <h:outputText id="currentBasketPrice" value="#{loginManager.userTotal}"/> /
-            </p>
         </p>
         
-        <h:form>
-        <h3>Inventory</h3>
+        <h3>Your Basket:</h3>
+        <p>
+        
+            <p>
+                <h:dataTable value="#{loginManager.basketItems}" var="it">
+                    <h:column>
+                        <h:outputLabel for="currentTemporaryName" value="Item: "/>
+                        <h:outputText id="currentTemporaryName" value="#{it.itemName},"/> 
+                    </h:column>
+                    <h:column>
+                        <h:outputLabel for="currentTemporaryAmount" value="In basket: "/>
+                        <h:outputText id="currentTemporaryAmount" value="#{it.itemQuantity},"/> 
+                    </h:column>
+                    <h:column>
+                        <h:outputLabel for="currentTemporaryPrice"  value="Total price (SEK): "/>
+                        <h:outputText id="currentTemporaryPrice" value="#{it.itemPrice}"/> 
+                    </h:column>
+                </h:dataTable>
+                <br/>
+
+                <h:outputLabel for="currentBasketPrice" rendered="#{loginManager.currentUser != null}"  value=" Total: "/>
+                <h:outputText id="currentBasketPrice" value="#{loginManager.userTotal}"/>
+            </p>
+            
+            <h:form>
+                <h:commandButton value="Buy Basket" action="#{loginManager.buy}"/>
+                <h:commandButton value="Clear Basket" action="#{loginManager.clearBasket}"/>
+            </h:form>
+        </p>
+        
+        
+        <h3>Inventory:</h3>
         
         <h:dataTable value="#{loginManager.allItems}" var="it">
             <h:column>
                 <h:outputLabel for="currentTemporaryName" value="Item: "/>
-                <h:outputText id="currentTemporaryName" value="#{it.itemName}"/> 
-                
+                <h:outputText id="currentTemporaryName" value="#{it.itemName},"/> 
+            </h:column>
+            <h:column>
                 <h:outputLabel for="currentTemporaryAmount" value="Units available: "/>
-                <h:outputText id="currentTemporaryAmount" value="#{it.itemQuantity}"/> 
-            
+                <h:outputText id="currentTemporaryAmount" value="#{it.itemQuantity},"/> 
+            </h:column>
+            <h:column>
                 <h:outputLabel for="currentTemporaryPrice"  value="Price per unit (SEK): "/>
                 <h:outputText id="currentTemporaryPrice" value="#{it.itemPrice}"/> 
-                
-                
+            </h:column>
+            
+            
+            
+            <h:column rendered="#{loginManager.currentUser.userAdmin == true}">
+                <h:form>
+                    <h:outputLabel for="newItemQuantity" value="New Item Quantity: "/>
+                    <h:inputText id="newItemQuantity" value="#{loginManager.modifiedItemQuantity}"/>
+                    <h:commandButton value="Modify" action="#{loginManager.setItemQuantity}">
+                        <f:setPropertyActionListener target="#{loginManager.modifiedItemName}" value="#{it.itemName}" />
+                    </h:commandButton>
+                </h:form>
+            </h:column>
+            <h:column rendered="#{loginManager.currentUser.userAdmin == true}">
+                <h:form>
+                    <h:outputLabel for="newItemPrice" value="New Item Price: "/>
+                    <h:inputText id="newItemPrice" value="#{loginManager.modifiedItemPrice}"/>
+                    <h:commandButton value="Modify" action="#{loginManager.setItemPrice}">
+                        <f:setPropertyActionListener target="#{loginManager.modifiedItemName}" value="#{it.itemName}" />
+                    </h:commandButton>
+                </h:form>
             </h:column>
         </h:dataTable>
-        
-        
-        <h:outputLabel for="newItemAmount" value="Amount Desired: "/>
-        <h:inputText id="newItemAmount" value="#{loginManager.temporaryItemAmount}"/>
-        
-        <h:outputLabel for="temporaryItem" value="Item Desired: "/>
-        <h:inputText id="tempoaryItem" value="#{loginManager.temporaryItem}"/>
-        
-        <p>
-            <h:commandButton value="Add to Basket" action="#{loginManager.addToBasket}"/>
-        </p>
-        
-        
-        <h3  rendered="#{loginManager.currentUser.userAdmin == true}">Additional Commands</h3>
+        <br/>
+        <h:form>
+            <h:outputLabel for="newItemAmount" value="Amount Desired: "/>
+            <h:inputText id="newItemAmount" value="#{loginManager.temporaryItemAmount}"/>
+
+            <h:outputLabel for="temporaryItem" value="Item Desired: "/>
+
+            <h:selectOneMenu value="#{loginManager.temporaryItem}">
+                <f:selectItems value="#{loginManager.allItems}" var="itm" itemValue="#{itm.itemName}" />
+            </h:selectOneMenu>
+            
             <p>
-                <h:outputLabel for="newItemName" rendered="#{loginManager.currentUser.userAdmin == true}" value="Name for the new Item: "/>
-                <h:inputText id="newItemName" rendered="#{loginManager.currentUser.userAdmin == true}" value="#{loginManager.newItemName}"/>
-                <h:outputLabel for="newItemQuantity" rendered="#{loginManager.currentUser.userAdmin == true}" value="New Item Quantity: "/>
-                <h:inputText id="newItemQuantity" rendered="#{loginManager.currentUser.userAdmin == true}" value="#{loginManager.newItemQuantity}"/>
-                <h:outputLabel for="newItemPrice" rendered="#{loginManager.currentUser.userAdmin == true}" value="New Item Price: "/>
-                <h:inputText id="newItemPrice" rendered="#{loginManager.currentUser.userAdmin == true}" value="#{loginManager.newItemPrice}"/>
+                <h:commandButton value="Add to Basket" action="#{loginManager.addToBasket}"/>
             </p>
-            <p>
-                <h:commandButton value="Add Item to Inventory" rendered="#{loginManager.currentUser.userAdmin == true}" action="#{loginManager.addItem}"/>
-            </p>
-                <h:outputLabel for="bannedUserName" rendered="#{loginManager.currentUser.userAdmin == true}" value="Enter user to be banned/unbanned: "/>
-                <h:inputText id="bannedUserName" rendered="#{loginManager.currentUser.userAdmin == true}" value="#{loginManager.bannedUserName}"/>
-                <h:commandButton value="Ban!" rendered="#{loginManager.currentUser.userAdmin == true}" action="#{loginManager.banUser}"/>
-                <h:commandButton value="Unban" rendered="#{loginManager.currentUser.userAdmin == true}" action="#{loginManager.unbanUser}"/>
-            <p>
-                
-            </p>
-            <hr/>
-        
-        
         </h:form>
+
+        <h:panelGroup rendered="#{loginManager.currentUser.userAdmin == true}">
+
+            <h3>Add Item to Inventory:</h3>
+            <h:form>
+                <p>
+                    <h:outputLabel for="newItemName" value="Name for the new Item: "/>
+                    <h:inputText id="newItemName" value="#{loginManager.newItemName}"/>
+                    <h:outputLabel for="newItemQuantity" value="New Item Quantity: "/>
+                    <h:inputText id="newItemQuantity" value="#{loginManager.newItemQuantity}"/>
+                    <h:outputLabel for="newItemPrice" value="New Item Price: "/>
+                    <h:inputText id="newItemPrice" value="#{loginManager.newItemPrice}"/>
+                </p>
+                <p>
+                    <h:commandButton value="Add" action="#{loginManager.addItem}"/>
+                </p>
+            </h:form>    
+
+            <h3>User List:</h3>
+
+            <h:dataTable value="#{loginManager.allUsers}" var="usr">
+                <h:column>
+                    <h:outputText id="currentTemporaryName" value="#{usr.userName}, "/> 
+                </h:column>
+                <h:column>
+                    <h:outputText id="currentTemporaryAdmin" rendered="#{usr.userAdmin == true}" value="Admin, "/> 
+                    <h:outputText id="currentTemporaryAdmin2" rendered="#{usr.userAdmin == false}" value="User, "/> 
+                </h:column>
+                <h:column>
+                    <h:outputText id="currentTemporaryBanned" rendered="#{usr.userBanned == false}" value="Not "/> 
+                    <h:outputLabel value="Banned. "/> 
+                </h:column>
+                <h:column>
+                    <h:form>
+                        <h:commandButton value="Ban!" rendered="#{usr.userBanned == false}" action="#{loginManager.banUser}">
+                            <f:setPropertyActionListener target="#{loginManager.bannedUserName}" value="#{usr.userName}" />
+                        </h:commandButton>
+                    </h:form>
+                    <h:form>
+                        <h:commandButton value="Unban" rendered="#{usr.userBanned == true}" action="#{loginManager.unbanUser}">
+                            <f:setPropertyActionListener target="#{loginManager.bannedUserName}" value="#{usr.userName}" />
+                        </h:commandButton>
+                    </h:form>
+                </h:column>
+            </h:dataTable>
+
+            <p>
+
+            </p>
+        </h:panelGroup>
+            
+        <hr/>
         
         <font color="red">
             <h:outputLabel for="newItemName" rendered="#{loginManager.shopFailure != null}" value="#{loginManager.shopFailure.message}"/>
