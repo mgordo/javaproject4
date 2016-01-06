@@ -29,7 +29,7 @@ public class ShopFacade {
             throw new Exception("No Item with name " + itemName);
         }
         item.setItemQuantity(quantity);
-        entityManager.refresh(item);
+        entityManager.merge(item);
     }
 
     public void deleteItem(Item item) throws Exception {
@@ -61,7 +61,7 @@ public class ShopFacade {
             throw new Exception("No User with name " + userName);
         }
         user.setUserBanned(banned);
-        entityManager.refresh(user);
+        entityManager.merge(user);
     }
 
     public void deleteUser(ShopUser user) throws Exception {
@@ -79,7 +79,7 @@ public class ShopFacade {
             throw new Exception("No User with name " + userName);
         }
         user.addToUserBasket(item);
-        entityManager.refresh(user);
+        entityManager.merge(user);
     }
     
     public void clearUserBasket(String userName) throws Exception {
@@ -88,7 +88,7 @@ public class ShopFacade {
             throw new Exception("No User with name " + userName);
         }
         user.setUserBasket("");
-        entityManager.refresh(user);
+        entityManager.merge(user);
     }
     
     public String getUserBasketPrintable(String userName) throws Exception {
@@ -134,7 +134,7 @@ public class ShopFacade {
         for (Item item:basket){
             ItemInterface realItem = getItem(item.getItemName());
             realItem.setItemQuantity(realItem.getItemQuantity()-item.getItemQuantity());
-            entityManager.refresh(realItem);
+            entityManager.merge(realItem);
         }
     }
 }

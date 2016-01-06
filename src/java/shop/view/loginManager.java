@@ -210,6 +210,9 @@ public class loginManager implements Serializable{
             if(!u.getUserPassword().equals(newPassword)){
                 throw new Exception("Wrong password or username");
             }
+            if(u.getUserBanned()){
+                throw new Exception("You have been banned from the system");
+            }
             currentUser = u;
             userBasket = shopfacade.getUserBasketPrintable(newUsername);
             userTotal = shopfacade.getUserBasketTotalPrice(newUsername);
@@ -253,6 +256,7 @@ public class loginManager implements Serializable{
     public Float buy(){
         
         try{
+            shopfacade.reduceItemQuantitiesByUserBasket(currentUser.getUserName());
             shopfacade.clearUserBasket(currentUser.getUserName());
             
             allItems = shopfacade.getItems();
@@ -308,7 +312,8 @@ public class loginManager implements Serializable{
             if(u==null){
                 throw new Exception("No such user in the database");
             }
-            u.setUserBanned(true);
+
+            shopfacade.setUserBanned(bannedUserName, true);
         }catch(Exception e){
             handleException(e);
             return 1f;
@@ -323,6 +328,7 @@ public class loginManager implements Serializable{
                 throw new Exception("No such user in the database");
             }
             u.setUserBanned(false);
+            shopfacade.setUserBanned(bannedUserName, false);
         }catch(Exception e){
             handleException(e);
             return 1f;

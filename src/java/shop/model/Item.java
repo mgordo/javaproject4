@@ -80,7 +80,7 @@ public class Item implements ItemInterface, Serializable {
         if ((this.itemName.equals(other.getItemName()))) {
             return true;
         }
-        return true;
+        return false;
     }
 
     @Override
