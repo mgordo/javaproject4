@@ -11,8 +11,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
- *
- * @author Miguel
+ * A Session Bean defining a User in storage, contains the login credentials, 
+ * the administrative and banned states, and the current basket of the User.
+ * @author Miguel & Nikos
  */
 @Entity
 public class ShopUser implements UserInterface, Serializable {
@@ -27,10 +28,21 @@ public class ShopUser implements UserInterface, Serializable {
     private boolean userBanned;
     private String userBasket;
     
+    /**
+     * Zero-argument default constructor, as per bean definition.
+     */
     public ShopUser(){
         
     }
     
+    /**
+     * Simple Constructor for a ShopUser.
+     * @param userName the username of the ShopUser.
+     * @param userPassword the password of the ShopUser.
+     * @param userAdmin the administrative state of the ShopUser.
+     * @param userBanned the banned state of the ShopUser.
+     * @param userBasket the basket of the ShopUser in String format.
+     */
     public ShopUser(String userName, String userPassword, boolean userAdmin, boolean userBanned, String userBasket){
         this.userName = userName;
         this.userPassword = userPassword;
@@ -45,6 +57,10 @@ public class ShopUser implements UserInterface, Serializable {
         return userName;
     }
     
+    /**
+     * Set the name of a ShopUser.
+     * @param userName the new name of the ShopUser.
+     */
     public void setUserName(String userName) {
          this.userName = userName;
     }
@@ -54,6 +70,10 @@ public class ShopUser implements UserInterface, Serializable {
         return userPassword;
     }
     
+    /**
+     * Set the password of a ShopUser.
+     * @param userPassword the new password of the ShopUser.
+     */
     public void setUserPassword(String userPassword) {
         this.userPassword = userPassword;
     }
@@ -63,6 +83,10 @@ public class ShopUser implements UserInterface, Serializable {
         return userAdmin;
     }
     
+    /**
+     * Set the administrative state of a ShopUser.
+     * @param userAdmin the new administrative state of the ShopUser.
+     */
     public void setUserAdmin(boolean userAdmin) {
          this.userAdmin = userAdmin;
     }
@@ -116,9 +140,14 @@ public class ShopUser implements UserInterface, Serializable {
         return userName.hashCode();
     }
 
+    /**
+     * Compare a ShopUser to an Object. 
+     * @param object the other Object.
+     * @return true if the other Object is a ShopUser of the same name. false 
+     * otherwise.
+     */
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof ShopUser)) {
             return false;
         }
@@ -134,6 +163,11 @@ public class ShopUser implements UserInterface, Serializable {
         return "shop.model.ShopUser("+userName+":"+userPassword+":"+userAdmin+":"+userBanned+")";
     }
     
+    /**
+     * Convert a basket in String format to a List of Items.
+     * @param userBasket a basket in String format.
+     * @return a basket as a List of Items.
+     */
     private static List<Item> parseBasketString(String userBasket){
         List<Item> basket = new ArrayList<Item>();
         if (userBasket == null || userBasket.isEmpty())
@@ -145,7 +179,12 @@ public class ShopUser implements UserInterface, Serializable {
         }
         return basket;
     }
-    
+        
+    /**
+     * Convert a basket as a List of Items to a String format.
+     * @param userBasket a basket as a List of Items.
+     * @return a basket in String format. 
+     */
     private static String createBasketString(List<Item> basket){
         String basketString = "";
         if (basket.isEmpty())

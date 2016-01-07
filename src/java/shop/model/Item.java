@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shop.model;
 
 import java.io.Serializable;
@@ -12,8 +7,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
- *
- * @author Miguel
+ * A Session Bean defining an Item in storage, contains information about the
+ * Quantity and Price.
+ * @author Miguel & Nikos
  */
 @Entity
 public class Item implements ItemInterface, Serializable {
@@ -26,9 +22,18 @@ public class Item implements ItemInterface, Serializable {
     private int itemQuantity;
     private float itemPrice;
 
+    /**
+     *  Zero-argument default constructor, as per bean definition.
+     */
     public Item() {
     }
 
+    /**
+     * Simple Constructor for an Item.
+     * @param itemName the name of the Item.
+     * @param itemQuantity the quantity of this Item contained in the inventory.
+     * @param itemPrice the current sale price of the Item.
+     */
     public Item(String itemName, int itemQuantity, float itemPrice){
         this.itemName = itemName;
         this.itemQuantity = itemQuantity;
@@ -41,7 +46,11 @@ public class Item implements ItemInterface, Serializable {
         return itemName;
     }
 
-    public void setId(String itemName) {
+    /**
+     * Set the name of an Item.
+     * @param itemName the new name of the Item.
+     */
+    public void setItemName(String itemName) {
         this.itemName = itemName;
     }
     
@@ -71,9 +80,14 @@ public class Item implements ItemInterface, Serializable {
         return itemName.hashCode();
     }
 
+    /**
+     * Compare an Item to an Object. 
+     * @param object the other Object.
+     * @return true if the other Object is an Item of the same name. false 
+     * otherwise.
+     */
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof Item)) {
             return false;
         }
